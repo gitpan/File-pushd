@@ -10,8 +10,7 @@ Module::Build->new(
     requires            => {
         perl            => 5.005,
         Test::More      => 0.48,
-        File::Path      => 0,
-        File::Spec      => 0,
         File::Temp      => 0,
+        Path::Class     => 0.13,
     },
 )->create_build_script;
