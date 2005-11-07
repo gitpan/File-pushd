@@ -9,7 +9,7 @@ use base 'Path::Class::Dir';
 
 BEGIN {
     use vars qw ($VERSION @EXPORT);
-    $VERSION     = "0.21";
+    $VERSION     = "0.22";
     @EXPORT      = qw (pushd tempd);
 }
 
@@ -101,7 +101,7 @@ sub pushd {
         my $tgt = dir($target_dir);
         $dest   = $tgt->is_absolute
                 ? $tgt 
-                : $orig->subdir( $tgt );
+                : $orig->subdir( $tgt )->absolute;
     }
     else {
         $dest = '';
