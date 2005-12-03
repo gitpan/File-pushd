@@ -2,8 +2,13 @@
 use strict;
 use warnings;
 
-use Test::More tests =>  36 ;
-use Path::Class;
+use Test::More tests =>  34 ;
+use File::Path 'rmtree';
+use Cwd 'abs_path';
+use File::Spec::Functions qw( catdir curdir updir canonpath rootdir ); 
+
+# abs_path necessary to pick up the volume on Win32, e.g. C:\
+sub absdir { canonpath( abs_path( shift || curdir() ) ); }
 
 #--------------------------------------------------------------------------#
 # Test import
@@ -18,9 +23,9 @@ can_ok( 'main', 'pushd', 'tempd' );
 
 
 my ( $new_dir, $temp_dir, $err );
-my $original_dir = dir()->absolute;
+my $original_dir = absdir();
 my $target_dir = 't';
-my $expected_dir = $original_dir->subdir($target_dir);
+my $expected_dir = absdir( catdir($original_dir,$target_dir) );
 my $nonexistant = 'DFASDFASDFASDFAS';
 
 #--------------------------------------------------------------------------#
@@ -29,7 +34,7 @@ my $nonexistant = 'DFASDFASDFASDFAS';
 
 eval { $new_dir = pushd($nonexistant) };
 $err = $@;
-like( $@, qr/\ACouldn't chdir to nonexistant directory/,
+like( $@, qr/\ACan't/,
     "pushd to nonexistant directory croaks" );
 
 #--------------------------------------------------------------------------#
@@ -39,14 +44,8 @@ like( $@, qr/\ACouldn't chdir to nonexistant directory/,
 $new_dir = pushd($target_dir);
 
 isa_ok( $new_dir, 'File::pushd' );
-isa_ok( $new_dir, 'Path::Class::Dir' );
 
-my $derived = $new_dir->parent;
-is( ref $derived, 'Path::Class::Dir', 
-    "derived directories revert to Path::Class::Dir" 
-);
-
-is( dir()->absolute, $expected_dir, "change directory on pushd (relative path)" );
+is( absdir(), $expected_dir, "change directory on pushd (relative path)" );
 
 #--------------------------------------------------------------------------#
 # Test stringification
@@ -60,7 +59,7 @@ is( "$new_dir", $expected_dir, "object stringifies" );
 
 undef $new_dir;
 
-is( dir()->absolute, $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
@@ -69,10 +68,10 @@ is( dir()->absolute, $original_dir,
 #--------------------------------------------------------------------------#
 
 $new_dir = pushd($expected_dir);
-is( dir()->absolute, $expected_dir, "change directory on pushd (absolute path)" );
+is( absdir(), $expected_dir, "change directory on pushd (absolute path)" );
 
 undef $new_dir;
-is( dir()->absolute, $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
@@ -80,12 +79,12 @@ is( dir()->absolute, $original_dir,
 # Test changing upwards
 #--------------------------------------------------------------------------#
 
-$new_dir = pushd("..");
-$expected_dir = $original_dir->parent;
+$expected_dir = absdir(updir());
+$new_dir = pushd(updir());
 
-is( dir()->absolute, $expected_dir, "change directory on pushd (upwards)" );
+is( absdir(), $expected_dir, "change directory on pushd (upwards)" );
 undef $new_dir;
-is( dir()->absolute, $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
@@ -93,15 +92,13 @@ is( dir()->absolute, $original_dir,
 # Test changing to root 
 #--------------------------------------------------------------------------#
 
-$new_dir = pushd( dir('') );
 
-# roundtrip dir() to drop volume (File::Spec bug workaround)
-my $curdir = dir()->absolute->relative->absolute;
+$new_dir = pushd( rootdir() );
 
-is( $curdir, dir('')->absolute,
-    "change directory on pushd (root)" );
+is( absdir(), absdir( rootdir() ),
+    "change directory on pushd (rootdir)" );
 undef $new_dir;
-is( dir()->absolute(), $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
@@ -111,15 +108,15 @@ is( dir()->absolute(), $original_dir,
 
 $new_dir = pushd( );
 
-is( dir()->absolute(), $original_dir, 
+is( absdir(), $original_dir, 
     "pushd with no argument doesn't change directory" 
 );
 chdir "t";
-is( dir()->absolute(), $original_dir->subdir( "t" ) ,
+is( absdir(), absdir( catdir( $original_dir, "t" ) ) ,
     "changing manually to another directory"
 );
 undef $new_dir;
-is( dir()->absolute(), $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
@@ -130,52 +127,52 @@ is( dir()->absolute(), $original_dir,
 $new_dir = tempd();
 $temp_dir = "$new_dir";
 
-ok( dir()->absolute() ne $original_dir, 
+ok( absdir() ne $original_dir, 
     "tempd changes to new temporary directory" );
 
 undef $new_dir;
-is( dir()->absolute(), $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
-ok( ! -e $temp_dir, "temporary directory cleaned up" );
+ok( ! -e $temp_dir, "temporary directory removed" );
 
 #--------------------------------------------------------------------------#
 # Test changing to temporary dir but preserving it
 #--------------------------------------------------------------------------#
 
 $new_dir = tempd();
-$temp_dir = dir($new_dir);
+$temp_dir = "$new_dir";
 
-ok( dir()->absolute() ne $original_dir, 
+ok( absdir() ne $original_dir, 
     "tempd changes to new temporary directory" );
 
 ok( $new_dir->preserve(1), "mark temporary directory for preservation" );
     
 undef $new_dir;
-is( dir()->absolute(), $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
 ok( -e $temp_dir, "temporary directory preserved" );
 
-ok( $temp_dir->rmtree, "temporary directory manually cleaned up" ); 
+ok( rmtree( $temp_dir ), "temporary directory manually cleaned up" ); 
 
 #--------------------------------------------------------------------------#
 # Test changing to temporary dir, preserve it, then revert
 #--------------------------------------------------------------------------#
 
 $new_dir = tempd();
-$temp_dir = dir($new_dir);
+$temp_dir = "$new_dir";
 
-ok( dir()->absolute() ne $original_dir, 
+ok( absdir() ne $original_dir, 
     "tempd changes to new temporary directory" );
 
 ok( $new_dir->preserve, "mark temporary directory for preservation" );
 ok( ! $new_dir->preserve(0), "mark temporary directory for removal" );
     
 undef $new_dir;
-is( dir()->absolute(), $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 
@@ -184,17 +181,17 @@ ok( ! -e $temp_dir, "temporary directory removed" );
 # Test preserve failing on non temp directory
 #--------------------------------------------------------------------------#
 
-$new_dir = pushd( $original_dir->subdir( $target_dir ) );
+$new_dir = pushd( catdir( $original_dir, $target_dir ) );
 
-is( dir()->absolute, $original_dir->subdir( $target_dir ), 
+is( absdir(), absdir( catdir( $original_dir, $target_dir ) ), 
     "change directory on pushd" );
-$temp_dir = dir($new_dir);
+$temp_dir = "$new_dir";
 
 ok( $new_dir->preserve, "regular pushd is automatically preserved" );
 ok( $new_dir->preserve(0), "can't mark regular pushd for deletion" );
     
 undef $new_dir;
-is( dir()->absolute(), $original_dir,
+is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
 );
 

@@ -1,16 +1,21 @@
 package File::pushd;
+
+$VERSION = "0.30";
+@EXPORT  = qw (pushd tempd);
+
 use strict;
 use warnings;
 use Carp;
-use File::Temp qw();
-use Path::Class;
-use base qw( Exporter Path::Class::Dir );
 
-BEGIN {
-    use vars qw ($VERSION @EXPORT);
-    $VERSION     = "0.24";
-    @EXPORT      = qw (pushd tempd);
-}
+use base        qw( Exporter );
+use Cwd         qw( cwd abs_path );
+use File::Path  qw( rmtree );
+use File::Temp  qw();
+use File::Spec;
+
+use overload 
+    q{""} => sub { File::Spec->canonpath( $_[0]->{_pushd} ) },
+    fallback => 1;
 
 #--------------------------------------------------------------------------#
 # main pod documentation 
@@ -33,18 +38,18 @@ File::pushd - change directory temporarily for a limited scope
  }
  # working directory has reverted to $ENV{HOME}
 
- # equivalent to pushd( File::Temp::tempdir )
+ # tempd() is equivalent to pushd( File::Temp::tempdir )
  {
      my $dir = tempd();
  }
 
- # $dir is a Path::Class::Dir object
+ # object stringifies naturally as an absolute path
  {
-     my $dir = pushd( '/tmp' );
-     print "Contents of $dir:\n";
-     print "  $_\n" for $dir->children();
+    my $dir = pushd( '/tmp' );
+    my $filename = File::Spec->catfile( $dir, "somefile.txt" );
+    # gives /tmp/somefile.txt
  }
-
+    
 =head1 DESCRIPTION
 
 File::pushd does a temporary C<chdir> that is easily and automatically
@@ -56,10 +61,10 @@ this happens automatically at the end of the scope.
 
 This is very handy when working with temporary directories for tasks like
 testing; a function is provided to streamline getting a temporary
-directory from L<File::Temp>.  
+directory from L<File::Temp>.
 
-The directory objects created are subclassed from L<Path::Class::Dir>, and 
-provide all the power and simplicity of L<Path::Class>.
+For convenience, the object stringifies as the canonical form of the absolute
+pathname of the directory entered.
 
 =head1 USAGE
 
@@ -80,11 +85,10 @@ Using File::pushd automatically imports the C<pushd> and C<tempd> functions.
  }
 
 Caches the current working directory, calls C<chdir> to change to the target
-directory, and returns a File::pushd object (which is a subclass of a
-L<Path::Class::Dir> object with an absolute pathname).  When the object is
+directory, and returns a File::pushd object.  When the object is
 destroyed, the working directory reverts to the original directory.
 
-The provided target directory can either be a relative or absolute path. If
+The provided target directory can be a relative or absolute path. If
 called with no arguments, it uses the current directory as its target and
 returns to the current directory when the object is destroyed.
 
@@ -93,25 +97,22 @@ returns to the current directory when the object is destroyed.
 sub pushd {
     my ($target_dir) = @_;
     
-    my $orig = dir()->absolute;
-    my $dest;
-
-    if ( $target_dir ) {
-        my $tgt = dir($target_dir);
-        $dest   = $tgt->is_absolute
-                ? $tgt 
-                : $orig->subdir( $tgt )->absolute;
-    }
-    else {
-        $dest = '';
-    }
+    my $orig = cwd;
     
-    if ( $dest ) {
-        chdir $dest or croak "Couldn't chdir to nonexistant directory $dest";
+    my $dest;
+    eval { $dest   = $target_dir ? abs_path( $target_dir ) : $orig };
+    
+    croak "Can't locate directory $dest: $@" if $@;
+    
+    if ($dest ne $orig) { 
+        chdir $dest or croak "Can't chdir to $dest: $!";
     }
 
-    my $self = bless dir()->absolute, __PACKAGE__;
-    $self->{__PACKAGE__ . "_original"} = $orig;
+    my $self = bless { 
+        _pushd => $dest,
+        _original => $orig
+    }, __PACKAGE__;
+
     return $self;
 }
 
@@ -135,7 +136,7 @@ will be issued if the directory cannot be removed.
 
 sub tempd {
     my $dir = pushd( File::Temp::tempdir() );
-    $dir->{__PACKAGE__ . "_tempd"} = 1;
+    $dir->{_tempd} = 1;
     return $dir;
 }
 
@@ -159,33 +160,15 @@ otherwise.
 
 sub preserve {
     my $self = shift;
-    return 1 if ! $self->{__PACKAGE__. "_tempd"};
+    return 1 if ! $self->{"_tempd"};
     if ( @_ == 0 ) {
-        return $self->{__PACKAGE__ . "_preserve"} = 1;
+        return $self->{_preserve} = 1;
     }
     else {
-        return $self->{__PACKAGE__ . "_preserve"} = $_[0] ? 1 : 0;
+        return $self->{_preserve} = $_[0] ? 1 : 0;
     }
 }
     
-#--------------------------------------------------------------------------#
-# new() -- make this give an actual Path::Class::Dir object
-# done this way to prevent Test::Pod::Coverage from complaining
-#--------------------------------------------------------------------------#
-
-=head2 new
- 
-C<new> should never be used directly.  It is a passthrough function that exists
-to ensure that directories derived from a C<File::pushd> are just regular
-C<Path::Class::Dir> objects.
-
-=cut
-
-sub new { 
-    shift; 
-    return dir( @_ );
-}
-
 #--------------------------------------------------------------------------#
 # DESTROY()
 # Revert to original directory as object is destroyed and cleanup
@@ -194,11 +177,11 @@ sub new {
 
 sub DESTROY {
     my ($self) = @_;
-    my $orig = $self->{__PACKAGE__ . "_original"};
+    my $orig = $self->{_original};
     chdir $orig if $orig; # should always be so, but just in case...
-    if ( $self->{__PACKAGE__ . "_tempd"} && 
-        !$self->{__PACKAGE__ . "_preserve"} ) {
-        eval { $self->rmtree };
+    if ( $self->{_tempd} && 
+        !$self->{_preserve} ) {
+        eval { rmtree( $self->{_pushd} ) };
         carp $@ if $@;
     }
 }
@@ -208,7 +191,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<Path::Class>, L<File::chdir>
+L<File::chdir>
 
 =head1 BUGS
 
