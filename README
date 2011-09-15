@@ -2,7 +2,7 @@ NAME
     File::pushd - change directory temporarily for a limited scope
 
 VERSION
-    This documentation describes version 1.00.
+    version 1.001
 
 SYNOPSIS
       use File::pushd;
@@ -63,6 +63,17 @@ USAGE
     called with no arguments, it uses the current directory as its target
     and returns to the current directory when the object is destroyed.
 
+    If the target directory does not exist or if the directory change fails
+    for some reason, "pushd" will die with an error message.
+
+    Can be given a hashref as an optional second argument. The only
+    supported option is "untaint_pattern", which is used to untaint file
+    paths involved. It defaults to "qr{^([-+@\w./]+)$}", which is reasonably
+    restrictive (e.g. it does not even allow spaces in the path). Change
+    this to suit your circumstances and security needs if running under
+    taint mode. Note: you must include the parentheses in the pattern to
+    capture the untainted portion of the path.
+
   tempd
       {
           my $dir = tempd();
@@ -74,6 +85,11 @@ USAGE
     temporary directory is removed when the object is destroyed. (But also
     see "preserve".) A warning will be issued if the directory cannot be
     removed.
+
+    As with "pushd", "tempd" will die if "chdir" fails.
+
+    It may be given a single options hash that will be passed internally to
+    C<pushd>.
 
   preserve
       {
@@ -93,32 +109,28 @@ USAGE
 SEE ALSO
     *   File::chdir
 
-BUGS
-    Please report any bugs or feature using the CPAN Request Tracker. Bugs
-    can be submitted through the web interface at
-    <http://rt.cpan.org/Dist/Display.html?Queue=File-pushd>
+SUPPORT
+  Bugs / Feature Requests
+    Please report any bugs or feature requests by email to "bug-file-pushd
+    at rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd>. You will
+    be automatically notified of any progress on the request by the system.
 
-    When submitting a bug or request, please include a test-file or a patch
-    to an existing test-file that illustrates the bug or desired feature.
+  Source Code
+    This is open source software. The code repository is available for
+    public review and contribution under the terms of the license.
+
+    <http://github.com/dagolden/file-pushd>
+
+      git clone http://github.com/dagolden/file-pushd
 
 AUTHOR
-    David A. Golden (DAGOLDEN)
+    David A Golden <dagolden@cpan.org>
 
 COPYRIGHT AND LICENSE
-    Copyright (c) 2005, 2006, 2007 by David A. Golden
+    This software is Copyright (c) 2011 by David A Golden.
 
-    Licensed under the Apache License, Version 2.0 (the "License"); you may
-    not use this file except in compliance with the License. You may obtain
-    a copy of the License at <http://www.apache.org/licenses/LICENSE-2.0>
+    This is free software, licensed under:
 
-    Files produced as output though the use of this software, including
-    generated copies of boilerplate templates provided with this software,
-    shall not be considered Derivative Works, but shall be considered the
-    original work of the Licensor.
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+      The Apache License, Version 2.0, January 2004
 

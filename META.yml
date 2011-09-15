@@ -1,24 +1,47 @@
 ---
-name: File-pushd
-version: 1.00
+abstract: 'change directory temporarily for a limited scope'
 author:
   - 'David A Golden <dagolden@cpan.org>'
-abstract: change directory temporarily for a limited scope
+build_requires:
+  File::Basename: 0
+  File::Find: 0
+  File::Spec::Functions: 0
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300000, CPAN::Meta::Converter version 2.112150'
 license: apache
-resources:
-  license: http://apache.org/licenses/LICENSE-2.0
-requires:
-  Cwd: 0
-  File::Path: 0
-  File::Spec: 0
-  File::Temp: 0
-  Test::More: 0.45
-  perl: 5.004
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: File-pushd
+no_index:
+  directory:
+    - t
+    - xt
+    - examples
+    - corpus
+  package:
+    - DB
 provides:
   File::pushd:
     file: lib/File/pushd.pm
-    version: 1.00
-generated_by: Module::Build version 0.2808
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+    version: 1.001
+requires:
+  Carp: 0
+  Cwd: 0
+  Exporter: 0
+  File::Path: 0
+  File::Spec: 0
+  File::Temp: 0
+  overload: 0
+  perl: 5.005
+  strict: 0
+  vars: 0
+  warnings: 0
+resources:
+  bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd
+  homepage: http://github.com/dagolden/file-pushd
+  repository: http://github.com/dagolden/file-pushd
+version: 1.001

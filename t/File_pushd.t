@@ -2,10 +2,11 @@
 use strict;
 #use warnings;
 
-use Test::More tests =>  37 ;
+use Test::More tests =>  39 ;
 use File::Path 'rmtree';
+use File::Basename 'dirname';
 use Cwd 'abs_path';
-use File::Spec::Functions qw( catdir curdir updir canonpath rootdir ); 
+use File::Spec::Functions qw( catdir curdir updir canonpath rootdir );
 use File::Temp;
 
 # abs_path necessary to pick up the volume on Win32, e.g. C:\
@@ -93,7 +94,7 @@ is( absdir(), $original_dir,
 );
 
 #--------------------------------------------------------------------------#
-# Test changing to root 
+# Test changing to root
 #--------------------------------------------------------------------------#
 
 
@@ -107,13 +108,25 @@ is( absdir(), $original_dir,
 );
 
 #--------------------------------------------------------------------------#
+# Test with options
+#--------------------------------------------------------------------------#
+
+$new_dir = pushd($expected_dir , { untaint_pattern => qr{^([-\w./]+)$} } );
+is( absdir(), $expected_dir, "change directory on pushd (custom untaint)" );
+undef $new_dir;
+is( absdir(), $original_dir,
+    "revert directory when variable goes out of scope"
+);
+
+
+#--------------------------------------------------------------------------#
 # Test changing in place
 #--------------------------------------------------------------------------#
 
 $new_dir = pushd( );
 
-is( absdir(), $original_dir, 
-    "pushd with no argument doesn't change directory" 
+is( absdir(), $original_dir,
+    "pushd with no argument doesn't change directory"
 );
 chdir "t";
 is( absdir(), absdir( catdir( $original_dir, "t" ) ) ,
@@ -131,7 +144,7 @@ is( absdir(), $original_dir,
 $new_dir = tempd();
 $temp_dir = "$new_dir";
 
-ok( absdir() ne $original_dir, 
+ok( absdir() ne $original_dir,
     "tempd changes to new temporary directory" );
 
 undef $new_dir;
@@ -148,11 +161,11 @@ ok( ! -e $temp_dir, "temporary directory removed" );
 $new_dir = tempd();
 $temp_dir = "$new_dir";
 
-ok( absdir() ne $original_dir, 
+ok( absdir() ne $original_dir,
     "tempd changes to new temporary directory" );
 
 ok( $new_dir->preserve(1), "mark temporary directory for preservation" );
-    
+
 undef $new_dir;
 is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
@@ -160,7 +173,7 @@ is( absdir(), $original_dir,
 
 ok( -e $temp_dir, "temporary directory preserved" );
 
-ok( rmtree( $temp_dir ), "temporary directory manually cleaned up" ); 
+ok( rmtree( $temp_dir ), "temporary directory manually cleaned up" );
 
 #--------------------------------------------------------------------------#
 # Test changing to temporary dir but preserving it *outside the process*
@@ -179,14 +192,23 @@ END_PROGRAM
 
 $program_file->close;
 
-$temp_dir = `$^X $program_file`;
+{
+  delete @ENV{qw(IFS CDPATH ENV BASH_ENV)};
+  $^X =~ m{(.*)[\\/]perl.*$};
+  $ENV{PATH} = $1; # for taint mode
+  $temp_dir = `$^X $program_file`;
+}
+
 chomp($temp_dir);
 
-ok( length $temp_dir, "got a temp directory name from subproces" );
+$temp_dir =~ /(.*)/;
+my $clean_tmp = $1;
 
-ok( -e $temp_dir, "temporary directory preserved outside subprocess" );
+ok( length $clean_tmp, "got a temp directory name from subproces" );
 
-ok( rmtree( $temp_dir ), "temporary directory manually cleaned up" ); 
+ok( -e $clean_tmp, "temporary directory preserved outside subprocess" );
+
+ok( rmtree( $clean_tmp ), "temporary directory manually cleaned up" );
 
 #--------------------------------------------------------------------------#
 # Test changing to temporary dir, preserve it, then revert
@@ -195,12 +217,12 @@ ok( rmtree( $temp_dir ), "temporary directory manually cleaned up" );
 $new_dir = tempd();
 $temp_dir = "$new_dir";
 
-ok( absdir() ne $original_dir, 
+ok( absdir() ne $original_dir,
     "tempd changes to new temporary directory" );
 
 ok( $new_dir->preserve, "mark temporary directory for preservation" );
 ok( ! $new_dir->preserve(0), "mark temporary directory for removal" );
-    
+
 undef $new_dir;
 is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"
@@ -213,13 +235,13 @@ ok( ! -e $temp_dir, "temporary directory removed" );
 
 $new_dir = pushd( catdir( $original_dir, $target_dir ) );
 
-is( absdir(), absdir( catdir( $original_dir, $target_dir ) ), 
+is( absdir(), absdir( catdir( $original_dir, $target_dir ) ),
     "change directory on pushd" );
 $temp_dir = "$new_dir";
 
 ok( $new_dir->preserve, "regular pushd is automatically preserved" );
 ok( $new_dir->preserve(0), "can't mark regular pushd for deletion" );
-    
+
 undef $new_dir;
 is( absdir(), $original_dir,
     "revert directory when variable goes out of scope"

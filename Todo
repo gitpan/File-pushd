@@ -1,4 +1,5 @@
 TODO list for Perl module File::pushd
 
-- use tempdir with CLEANUP=>0 so we can actually preserve directories
-  (have to test using a subprocess to confirm that it works)
+- Add some sort of flag that avoids fatal errors changing directories.
+  Either a flag on pushd( $dir, { %opts } ) or else on use (but make it
+  calling package specific) "use File::pushd qw/pushd :non_fatal/;"
