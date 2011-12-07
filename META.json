@@ -4,7 +4,7 @@
       "David A Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300000, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "Dist::Zilla version 4.300002, CPAN::Meta::Converter version 2.112580",
    "license" : [
       "apache_2_0"
    ],
@@ -57,7 +57,7 @@
    "provides" : {
       "File::pushd" : {
          "file" : "lib/File/pushd.pm",
-         "version" : "1.001"
+         "version" : "1.002"
       }
    },
    "release_status" : "stable",
@@ -66,13 +66,13 @@
          "mailto" : "bug-file-pushd at rt.cpan.org",
          "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd"
       },
-      "homepage" : "http://github.com/dagolden/file-pushd",
+      "homepage" : "https://github.com/dagolden/file-pushd",
       "repository" : {
          "type" : "git",
-         "url" : "http://github.com/dagolden/file-pushd",
-         "web" : "http://github.com/dagolden/file-pushd"
+         "url" : "https://github.com/dagolden/file-pushd.git",
+         "web" : "https://github.com/dagolden/file-pushd"
       }
    },
-   "version" : "1.001"
+   "version" : "1.002"
 }
 

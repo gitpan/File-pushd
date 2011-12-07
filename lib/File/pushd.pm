@@ -3,7 +3,7 @@ use strict;
 BEGIN{ if (not $] < 5.006) { require warnings; warnings->import } }
 package File::pushd;
 # ABSTRACT: change directory temporarily for a limited scope
-our $VERSION = '1.001'; # VERSION
+our $VERSION = '1.002'; # VERSION
 
 use vars qw/@EXPORT @ISA/;
 @EXPORT  = qw( pushd tempd );
@@ -39,6 +39,7 @@ sub pushd {
 
     my $tainted_dest;
     eval { $tainted_dest   = $target_dir ? abs_path( $target_dir ) : $orig };
+    croak "Can't locate directory $target_dir: $@" if $@;
 
     my $dest;
     if ( $tainted_dest =~ $options->{untaint_pattern} ) {
@@ -47,8 +48,6 @@ sub pushd {
     else {
       $dest = $tainted_dest;
     }
-
-    croak "Can't locate directory $target_dir: $@" if $@;
 
     if ($dest ne $orig) {
         chdir $dest or croak "Can't chdir to $dest\: $!";
@@ -119,7 +118,7 @@ File::pushd - change directory temporarily for a limited scope
 
 =head1 VERSION
 
-version 1.001
+version 1.002
 
 =head1 SYNOPSIS
 
@@ -242,18 +241,18 @@ L<File::chdir>
 
 =head2 Bugs / Feature Requests
 
-Please report any bugs or feature requests by email to C<bug-file-pushd at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd>. You will be automatically notified of any
-progress on the request by the system.
+Please report any bugs or feature requests through the issue tracker
+at L<http://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd>.
+You will be notified automatically of any progress on your issue.
 
 =head2 Source Code
 
 This is open source software.  The code repository is available for
 public review and contribution under the terms of the license.
 
-L<http://github.com/dagolden/file-pushd>
+L<https://github.com/dagolden/file-pushd>
 
-  git clone http://github.com/dagolden/file-pushd
+  git clone https://github.com/dagolden/file-pushd.git
 
 =head1 AUTHOR
 
