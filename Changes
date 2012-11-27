@@ -1,5 +1,12 @@
 Revision history for Perl module File::pushd
 
+1.003     2012-11-27 17:49:03 America/New_York
+
+    [BUG FIXES]
+
+    - Fix test failures on Win32 when using perl.exe that must link to gcc
+      DLL [rt.cpan.org #81476]
+
 1.002     2011-12-07 11:40:26 EST5EDT
 
     [BUG FIXES]

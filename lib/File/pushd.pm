@@ -3,7 +3,7 @@ use strict;
 BEGIN{ if (not $] < 5.006) { require warnings; warnings->import } }
 package File::pushd;
 # ABSTRACT: change directory temporarily for a limited scope
-our $VERSION = '1.002'; # VERSION
+our $VERSION = '1.003'; # VERSION
 
 use vars qw/@EXPORT @ISA/;
 @EXPORT  = qw( pushd tempd );
@@ -108,7 +108,7 @@ sub DESTROY {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -118,7 +118,7 @@ File::pushd - change directory temporarily for a limited scope
 
 =head1 VERSION
 
-version 1.002
+version 1.003
 
 =head1 SYNOPSIS
 
@@ -235,14 +235,14 @@ L<File::chdir>
 
 =back
 
-=for :stopwords cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders
+=for :stopwords cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan
 
 =head1 SUPPORT
 
 =head2 Bugs / Feature Requests
 
 Please report any bugs or feature requests through the issue tracker
-at L<http://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd>.
+at L<https://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd>.
 You will be notified automatically of any progress on your issue.
 
 =head2 Source Code
@@ -252,7 +252,7 @@ public review and contribution under the terms of the license.
 
 L<https://github.com/dagolden/file-pushd>
 
-  git clone https://github.com/dagolden/file-pushd.git
+  git clone git://github.com/dagolden/file-pushd.git
 
 =head1 AUTHOR
 
@@ -260,15 +260,10 @@ David A Golden <dagolden@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2011 by David A Golden.
+This software is Copyright (c) 2012 by David A Golden.
 
 This is free software, licensed under:
 
   The Apache License, Version 2.0, January 2004
 
 =cut
-
-
-__END__
-
-

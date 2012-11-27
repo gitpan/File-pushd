@@ -1,3 +1,4 @@
+CONTRIBUTING
 Changes
 LICENSE
 MANIFEST
@@ -5,7 +6,6 @@ META.json
 META.yml
 Makefile.PL
 README
-README.PATCHING
 Todo
 dist.ini
 examples/example.pl
@@ -13,6 +13,7 @@ lib/File/pushd.pm
 t/00-compile.t
 t/File_pushd.t
 xt/author/critic.t
+xt/author/pod-spell.t
 xt/release/distmeta.t
 xt/release/pod-coverage.t
 xt/release/pod-syntax.t
