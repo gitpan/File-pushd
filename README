@@ -2,7 +2,7 @@ NAME
     File::pushd - change directory temporarily for a limited scope
 
 VERSION
-    version 1.003
+    version 1.004
 
 SYNOPSIS
       use File::pushd;
@@ -112,8 +112,8 @@ SEE ALSO
 SUPPORT
   Bugs / Feature Requests
     Please report any bugs or feature requests through the issue tracker at
-    <https://rt.cpan.org/Public/Dist/Display.html?Name=File-pushd>. You will
-    be notified automatically of any progress on your issue.
+    <https://github.com/dagolden/file-pushd/issues>. You will be notified
+    automatically of any progress on your issue.
 
   Source Code
     This is open source software. The code repository is available for
@@ -124,10 +124,13 @@ SUPPORT
       git clone git://github.com/dagolden/file-pushd.git
 
 AUTHOR
-    David A Golden <dagolden@cpan.org>
+    David Golden <dagolden@cpan.org>
+
+CONTRIBUTOR
+    Diab Jerius <djerius@cfa.harvard.edu>
 
 COPYRIGHT AND LICENSE
-    This software is Copyright (c) 2012 by David A Golden.
+    This software is Copyright (c) 2013 by David A Golden.
 
     This is free software, licensed under:
 

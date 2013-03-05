@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.005;
+use 5.006;
 
 use ExtUtils::MakeMaker 6.30;
 
@@ -10,11 +10,13 @@ use ExtUtils::MakeMaker 6.30;
 
 my %WriteMakefileArgs = (
   "ABSTRACT" => "change directory temporarily for a limited scope",
-  "AUTHOR" => "David A Golden <dagolden\@cpan.org>",
+  "AUTHOR" => "David Golden <dagolden\@cpan.org>",
   "BUILD_REQUIRES" => {
+    "ExtUtils::MakeMaker" => 0,
     "File::Basename" => 0,
     "File::Find" => 0,
     "File::Spec::Functions" => 0,
+    "List::Util" => 0,
     "Test::More" => 0
   },
   "CONFIGURE_REQUIRES" => {
@@ -33,10 +35,9 @@ my %WriteMakefileArgs = (
     "File::Temp" => 0,
     "overload" => 0,
     "strict" => 0,
-    "vars" => 0,
     "warnings" => 0
   },
-  "VERSION" => "1.003",
+  "VERSION" => "1.004",
   "test" => {
     "TESTS" => "t/*.t"
   }
