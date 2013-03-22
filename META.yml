@@ -12,7 +12,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300030, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Dist::Zilla version 4.300031, CPAN::Meta::Converter version 2.120921'
 license: apache
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -29,7 +29,7 @@ no_index:
 provides:
   File::pushd:
     file: lib/File/pushd.pm
-    version: 1.004
+    version: 1.005
 requires:
   Carp: 0
   Cwd: 0
@@ -45,6 +45,6 @@ resources:
   bugtracker: https://github.com/dagolden/file-pushd/issues
   homepage: https://metacpan.org/release/File-pushd
   repository: git://github.com/dagolden/file-pushd.git
-version: 1.004
+version: 1.005
 x_contributors:
   - 'Diab Jerius <djerius@cfa.harvard.edu>'
