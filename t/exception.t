@@ -4,8 +4,8 @@ use Test::More;
 use File::pushd;
 
 eval {
-     my $dir = tempd;
-     die( "error\n" );
+    my $dir = tempd;
+    die("error\n");
 };
 
 my $err = $@;
@@ -15,7 +15,7 @@ done_testing;
 #
 # This file is part of File-pushd
 #
-# This software is Copyright (c) 2013 by David A Golden.
+# This software is Copyright (c) 2014 by David A Golden.
 #
 # This is free software, licensed under:
 #

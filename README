@@ -2,31 +2,31 @@ NAME
     File::pushd - change directory temporarily for a limited scope
 
 VERSION
-    version 1.005
+    version 1.006
 
 SYNOPSIS
-      use File::pushd;
- 
-      chdir $ENV{HOME};
- 
-      # change directory again for a limited scope
-      {
-          my $dir = pushd( '/tmp' );
-          # working directory changed to /tmp
-      }
-      # working directory has reverted to $ENV{HOME}
- 
-      # tempd() is equivalent to pushd( File::Temp::tempdir )
-      {
-          my $dir = tempd();
-      }
- 
-      # object stringifies naturally as an absolute path
-      {
+     use File::pushd;
+
+     chdir $ENV{HOME};
+
+     # change directory again for a limited scope
+     {
          my $dir = pushd( '/tmp' );
-         my $filename = File::Spec->catfile( $dir, "somefile.txt" );
-         # gives /tmp/somefile.txt
-      }
+         # working directory changed to /tmp
+     }
+     # working directory has reverted to $ENV{HOME}
+
+     # tempd() is equivalent to pushd( File::Temp::tempdir )
+     {
+         my $dir = tempd();
+     }
+
+     # object stringifies naturally as an absolute path
+     {
+        my $dir = pushd( '/tmp' );
+        my $filename = File::Spec->catfile( $dir, "somefile.txt" );
+        # gives /tmp/somefile.txt
+     }
 
 DESCRIPTION
     File::pushd does a temporary "chdir" that is easily and automatically
@@ -44,16 +44,20 @@ DESCRIPTION
     For convenience, the object stringifies as the canonical form of the
     absolute pathname of the directory entered.
 
+    Warning: if you create multiple "pushd" objects in the same lexical
+    scope, their destruction order is not guaranteed and you might not wind
+    up in the directory you expect.
+
 USAGE
-      use File::pushd;
+     use File::pushd;
 
     Using File::pushd automatically imports the "pushd" and "tempd"
     functions.
 
   pushd
-      {
-          my $dir = pushd( $target_directory );
-      }
+     {
+         my $dir = pushd( $target_directory );
+     }
 
     Caches the current working directory, calls "chdir" to change to the
     target directory, and returns a File::pushd object. When the object is
@@ -68,16 +72,16 @@ USAGE
 
     Can be given a hashref as an optional second argument. The only
     supported option is "untaint_pattern", which is used to untaint file
-    paths involved. It defaults to "qr{^([-+@\w./]+)$}", which is reasonably
-    restrictive (e.g. it does not even allow spaces in the path). Change
-    this to suit your circumstances and security needs if running under
-    taint mode. Note: you must include the parentheses in the pattern to
-    capture the untainted portion of the path.
+    paths involved. It defaults to {qr{^("" in -+@\w.+)$}}, which is
+    reasonably restrictive (e.g. it does not even allow spaces in the path).
+    Change this to suit your circumstances and security needs if running
+    under taint mode. *Note*: you must include the parentheses in the
+    pattern to capture the untainted portion of the path.
 
   tempd
-      {
-          my $dir = tempd();
-      }
+     {
+         my $dir = tempd();
+     }
 
     This function is like "pushd" but automatically creates and calls
     "chdir" to a temporary directory created by File::Temp. Unlike normal
@@ -89,14 +93,14 @@ USAGE
     As with "pushd", "tempd" will die if "chdir" fails.
 
     It may be given a single options hash that will be passed internally to
-    C<pushd>.
+    "pushd".
 
   preserve
-      {
-          my $dir = tempd();
-          $dir->preserve;      # mark to preserve at end of scope
-          $dir->preserve(0);   # mark to delete at end of scope
-      }
+     {
+         my $dir = tempd();
+         $dir->preserve;      # mark to preserve at end of scope
+         $dir->preserve(0);   # mark to delete at end of scope
+     }
 
     Controls whether a temporary directory will be cleaned up when the
     object is destroyed. With no arguments, "preserve" sets the directory to
@@ -112,16 +116,16 @@ SEE ALSO
 SUPPORT
   Bugs / Feature Requests
     Please report any bugs or feature requests through the issue tracker at
-    <https://github.com/dagolden/file-pushd/issues>. You will be notified
+    <https://github.com/dagolden/File-pushd/issues>. You will be notified
     automatically of any progress on your issue.
 
   Source Code
     This is open source software. The code repository is available for
     public review and contribution under the terms of the license.
 
-    <https://github.com/dagolden/file-pushd>
+    <https://github.com/dagolden/File-pushd>
 
-      git clone git://github.com/dagolden/file-pushd.git
+      git clone https://github.com/dagolden/File-pushd.git
 
 AUTHOR
     David Golden <dagolden@cpan.org>
@@ -130,7 +134,7 @@ CONTRIBUTOR
     Diab Jerius <djerius@cfa.harvard.edu>
 
 COPYRIGHT AND LICENSE
-    This software is Copyright (c) 2013 by David A Golden.
+    This software is Copyright (c) 2014 by David A Golden.
 
     This is free software, licensed under:
 
