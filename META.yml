@@ -12,7 +12,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: '6.17'
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 5.014, CPAN::Meta::Converter version 2.140640'
+generated_by: 'Dist::Zilla version 5.019, CPAN::Meta::Converter version 2.141170'
 license: apache
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -29,7 +29,7 @@ no_index:
 provides:
   File::pushd:
     file: lib/File/pushd.pm
-    version: '1.006'
+    version: '1.007'
 requires:
   Carp: '0'
   Cwd: '0'
@@ -38,14 +38,15 @@ requires:
   File::Spec: '0'
   File::Temp: '0'
   overload: '0'
-  perl: '5.008'
+  perl: '5.006'
   strict: '0'
   warnings: '0'
 resources:
   bugtracker: https://github.com/dagolden/File-pushd/issues
   homepage: https://github.com/dagolden/File-pushd
   repository: https://github.com/dagolden/File-pushd.git
-version: '1.006'
+version: '1.007'
 x_authority: cpan:DAGOLDEN
 x_contributors:
   - 'Diab Jerius <djerius@cfa.harvard.edu>'
+  - 'Graham Ollis <plicease@cpan.org>'

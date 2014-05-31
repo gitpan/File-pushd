@@ -1,5 +1,11 @@
 Revision history for Perl module File::pushd
 
+1.007     2014-05-30 23:59:02-04:00 America/New_York
+
+    [FIXED]
+
+    - Fixed a testing edge case on Windows
+
 1.006     2014-03-27 15:29:36-04:00 America/New_York
 
     [DOCUMENTED]

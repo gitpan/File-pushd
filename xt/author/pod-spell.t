@@ -19,6 +19,9 @@ dagolden
 Diab
 Jerius
 djerius
+Graham
+Ollis
+plicease
 lib
 File
 pushd

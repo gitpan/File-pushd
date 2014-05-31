@@ -3,7 +3,7 @@ use warnings;
 
 package File::pushd;
 # ABSTRACT: change directory temporarily for a limited scope
-our $VERSION = '1.006'; # VERSION
+our $VERSION = '1.007'; # VERSION
 
 our @EXPORT = qw( pushd tempd );
 our @ISA    = qw( Exporter );
@@ -127,7 +127,7 @@ File::pushd - change directory temporarily for a limited scope
 
 =head1 VERSION
 
-version 1.006
+version 1.007
 
 =head1 SYNOPSIS
 
@@ -271,9 +271,19 @@ L<https://github.com/dagolden/File-pushd>
 
 David Golden <dagolden@cpan.org>
 
-=head1 CONTRIBUTOR
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item *
 
 Diab Jerius <djerius@cfa.harvard.edu>
+
+=item *
+
+Graham Ollis <plicease@cpan.org>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 
