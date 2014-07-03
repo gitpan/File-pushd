@@ -3,7 +3,7 @@ use warnings;
 
 package File::pushd;
 # ABSTRACT: change directory temporarily for a limited scope
-our $VERSION = '1.007'; # VERSION
+our $VERSION = '1.008'; # VERSION
 
 our @EXPORT = qw( pushd tempd );
 our @ISA    = qw( Exporter );
@@ -127,7 +127,7 @@ File::pushd - change directory temporarily for a limited scope
 
 =head1 VERSION
 
-version 1.007
+version 1.008
 
 =head1 SYNOPSIS
 

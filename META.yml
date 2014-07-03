@@ -7,7 +7,7 @@ build_requires:
   File::Basename: '0'
   File::Spec::Functions: '0'
   List::Util: '0'
-  Test::More: '0'
+  Test::More: '0.96'
   version: '0'
 configure_requires:
   ExtUtils::MakeMaker: '6.17'
@@ -29,7 +29,7 @@ no_index:
 provides:
   File::pushd:
     file: lib/File/pushd.pm
-    version: '1.007'
+    version: '1.008'
 requires:
   Carp: '0'
   Cwd: '0'
@@ -45,7 +45,7 @@ resources:
   bugtracker: https://github.com/dagolden/File-pushd/issues
   homepage: https://github.com/dagolden/File-pushd
   repository: https://github.com/dagolden/File-pushd.git
-version: '1.007'
+version: '1.008'
 x_authority: cpan:DAGOLDEN
 x_contributors:
   - 'Diab Jerius <djerius@cfa.harvard.edu>'

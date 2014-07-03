@@ -60,7 +60,8 @@ my $static_prereqs = do { my $x = {
                                       'Test::CPAN::Meta' => '0',
                                       'Test::More' => '0',
                                       'Test::Pod' => '1.41',
-                                      'Test::Pod::Coverage' => '1.08'
+                                      'Test::Pod::Coverage' => '1.08',
+                                      'Test::Spelling' => '0.12'
                                     }
                     },
        'runtime' => {
@@ -87,7 +88,7 @@ my $static_prereqs = do { my $x = {
                                    'File::Basename' => '0',
                                    'File::Spec::Functions' => '0',
                                    'List::Util' => '0',
-                                   'Test::More' => '0',
+                                   'Test::More' => '0.96',
                                    'version' => '0'
                                  }
                  }

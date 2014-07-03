@@ -2,7 +2,7 @@ NAME
     File::pushd - change directory temporarily for a limited scope
 
 VERSION
-    version 1.007
+    version 1.008
 
 SYNOPSIS
      use File::pushd;
