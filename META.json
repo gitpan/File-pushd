@@ -78,7 +78,7 @@
    "provides" : {
       "File::pushd" : {
          "file" : "lib/File/pushd.pm",
-         "version" : "1.008"
+         "version" : "1.009"
       }
    },
    "release_status" : "stable",
@@ -93,7 +93,7 @@
          "web" : "https://github.com/dagolden/File-pushd"
       }
    },
-   "version" : "1.008",
+   "version" : "1.009",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Diab Jerius <djerius@cfa.harvard.edu>",
